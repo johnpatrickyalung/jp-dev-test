@@ -1566,11 +1566,18 @@ span.product-video-testimonials__play svg {
     gap: 0px !important;
   }
 }
+@media screen and (max-width: 393px) {
+  .product-swiper-gallery {
+    --product-swiper-thumb-size: 54px !important;
+    --product-swiper-gallery-gap:7.68px;
+    --product-swiper-thumbs-gap: 7.1px;
+    }
+}
 
 @media screen and (max-width: 360px) {
-  .product-swiper-layout {
+  .product-swiper-layout {  
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr; 
       gap: 15px;
       align-items: start;
   }
