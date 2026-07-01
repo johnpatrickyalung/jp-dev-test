@@ -77,7 +77,7 @@
             {{ block.settings.item_2_text_prefix | escape }}
           {%- endif -%}
           {%- if block.settings.item_2_flag != blank -%}
-            {{ ' ' }}{{ block.settings.item_2_flag | escape }}
+            {{ ' ' }}{% render 'icon_currency', currency_iso: block.settings.item_2_flag %}
           {%- endif -%}
           {%- if country_name != blank -%}
             {{ ' ' }}{{ country_name | escape }}

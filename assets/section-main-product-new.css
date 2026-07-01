@@ -861,6 +861,12 @@ span.product-bundle-picker__best-value {
   font-weight: 700;
 }
 
+.product-info-list__text .icon-currency {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0.25rem;
+}
+
 .product-info-list__link {
   color: inherit;
   text-decoration: underline;
