@@ -179,7 +179,7 @@
         "info_list_cHPd6k": {
           "type": "info_list",
           "settings": {
-            "text_color": "#043227",
+            "text_color": "#1c1c1c",
             "icon_color": "#043227",
             "in_stock_color": "#22c55e",
             "row_gap": 12,
@@ -191,8 +191,8 @@
             "item_2_enabled": true,
             "item_2_text_prefix": "Fast, Tracked Shipping to:",
             "item_2_use_country": true,
-            "item_2_country_override": "",
-            "item_2_flag": "🇺🇸",
+            "item_2_country_override": "United States",
+            "item_2_flag": "us",
             "item_2_text_suffix": "",
             "item_2_icon": "shipping",
             "item_2_custom_icon": "shopify://shop_images/image_44.png",
@@ -272,9 +272,9 @@
         "padding_top": 40,
         "padding_bottom": 40
       }
-    },
+    }
   },
   "order": [
-    "main_product_new_pL7Mdz",
+    "main_product_new_pL7Mdz"
   ]
 }

@@ -1544,12 +1544,26 @@ span.product-video-testimonials__play svg {
     width: 33.59px;
     height: 33.59px;
   }
+
+  .product-subscription-banner__label {
+    padding: 10px 15px !important;
+  }
+  .product-subscription-banner__copy{
+    gap: 0px !important;
+  }
 }
 @media screen and (max-width: 375px) {
   .product-swiper-gallery {
     --product-swiper-thumb-size: 51.9px !important;
     --product-swiper-gallery-gap: 7.68px;
     --product-swiper-thumbs-gap: 7.1px;
+  }
+  
+  .product-subscription-banner__label {
+    padding: 10px 15px !important;
+  }
+  .product-subscription-banner__copy{
+    gap: 0px !important;
   }
 }
 
