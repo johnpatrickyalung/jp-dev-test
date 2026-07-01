@@ -9,7 +9,7 @@
 {%- assign panel_id = 'ProductAccordion-' | append: block.id | append: '-' | append: section.id -%}
 {%- assign trigger_id = 'ProductAccordionTrigger-' | append: block.id | append: '-' | append: section.id -%}
 
-<product-accordion class="product-swiper-accordion">
+<product-accordion class="product-swiper-accordion" {{ block.shopify_attributes }}>
   <button
     type="button"
     id="{{ trigger_id }}"
