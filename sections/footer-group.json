@@ -40,6 +40,7 @@
         "6e0c08d4-cd4c-439c-b5e2-a483bba29ec2",
         "f95fe295-fbc2-4d2b-a952-72670c2ab328"
       ],
+      "disabled": true,
       "settings": {
         "color_scheme": "inverse",
         "newsletter_enable": false,

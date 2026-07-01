@@ -23,7 +23,7 @@
             "link": "",
             "background_color": "#1a4731",
             "text_color": "#ffffff",
-            "highlight_color": "#F79D0D"
+            "highlight_color": "#f79d0d"
           }
         }
       },
@@ -103,7 +103,7 @@
       "name": "t:sections.scrolling-marquee.presets.name",
       "settings": {
         "background_color": "#f6f6f6",
-        "text_color": "#095946",
+        "text_color": "#043227",
         "scroll_speed": 30
       }
     }
