@@ -1,0 +1,102 @@
+{% comment %}
+  Renders custom add to cart button with price pill.
+
+  Accepts:
+  - block: {Object}
+  - product: {Object}
+  - section: {Object}
+  - product_form_id: {String}
+
+  Usage:
+  {% render 'product-add-to-cart', block: block, product: product, section: section, product_form_id: product_form_id %}
+{% endcomment %}
+
+{%- liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  assign selected_price = selected_variant.price | money
+  assign selected_compare = selected_variant.compare_at_price | money
+  assign show_compare = false
+  if selected_variant.compare_at_price > selected_variant.price
+    assign show_compare = true
+  endif
+
+  assign check_against_inventory = true
+  if selected_variant.inventory_management != 'shopify' or selected_variant.inventory_policy == 'continue'
+    assign check_against_inventory = false
+  endif
+  assign quantity_rule_soldout = false
+  if selected_variant.quantity_rule.min > selected_variant.inventory_quantity and check_against_inventory
+    assign quantity_rule_soldout = true
+  endif
+-%}
+
+<product-add-to-cart
+  class="product-atc"
+  data-section="{{ section.id }}"
+  style="--product-atc-bg: {{ block.settings.button_background_color }};"
+>
+  <product-form class="product-form" data-hide-errors="false">
+    <div class="product-form__error-message-wrapper" role="alert" hidden>
+      <span class="product-form__error-message"></span>
+    </div>
+
+    {%- form 'product',
+      product,
+      id: product_form_id,
+      class: 'form product-atc__form',
+      novalidate: 'novalidate',
+      data-type: 'add-to-cart-form'
+    -%}
+      <input
+        type="hidden"
+        name="quantity"
+        value="1"
+      >
+      <input
+        type="hidden"
+        name="id"
+        value="{{ selected_variant.id }}"
+        class="product-variant-id"
+      >
+      <input
+        type="hidden"
+        name="selling_plan"
+        value=""
+        class="product-selling-plan-id"
+      >
+
+      <button
+        id="ProductSubmitButton-{{ section.id }}"
+        type="submit"
+        name="add"
+        class="product-atc__button"
+        {% if selected_variant.available == false or quantity_rule_soldout %}
+          disabled
+        {% endif %}
+      >
+        <span class="product-atc__label">
+          {%- if selected_variant.available == false or quantity_rule_soldout -%}
+            {{ 'products.product.sold_out' | t }}
+          {%- else -%}
+            {{ block.settings.button_label | escape }}
+          {%- endif -%}
+        </span>
+        <span class="product-atc__prices">
+          <span class="product-atc__price" data-atc-price>{{ selected_price }}</span>
+          <span
+            class="product-atc__compare"
+            data-atc-compare
+            {% unless show_compare %}hidden{% endunless %}
+          >
+            {{- selected_compare -}}
+          </span>
+        </span>
+        <span class="loading-overlay__spinner hidden" aria-hidden="true">
+          <svg class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+            <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+          </svg>
+        </span>
+      </button>
+    {%- endform -%}
+  </product-form>
+</product-add-to-cart>

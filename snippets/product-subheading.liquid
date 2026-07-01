@@ -1,0 +1,26 @@
+{% comment %}
+  Renders a product subheading with custom color.
+
+  Accepts:
+  - block: {Object} Block object with subheading settings
+  - product: {Object} Product liquid object
+
+  Usage:
+  {% render 'product-subheading', block: block, product: product %}
+{% endcomment %}
+
+{%- liquid
+  assign subheading_text = block.settings.text
+  if block.settings.use_product_vendor and product.vendor != blank
+    assign subheading_text = product.vendor
+  endif
+-%}
+
+{%- if subheading_text != blank -%}
+  <p
+    class="product-subheading"
+    style="--product-subheading-color: {{ block.settings.text_color }};"
+  >
+    {{ subheading_text | escape }}
+  </p>
+{%- endif -%}

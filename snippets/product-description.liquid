@@ -1,0 +1,7 @@
+<div class="product-description">
+    {% if product.description != blank  %}
+        {{ product.description }}
+    {% else %}    
+        {{ block.settings.text }}
+    {% endif %}
+</div>

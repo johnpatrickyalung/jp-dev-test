@@ -1,0 +1,176 @@
+{% comment %}
+  Renders a video testimonial swiper carousel.
+
+  Accepts:
+  - section: {Object} section object (settings + video_testimonial blocks)
+{% endcomment %}
+
+{%- liquid
+  assign testimonial_blocks = section.blocks | where: 'type', 'video_testimonial'
+  assign slide_count = 0
+
+  for item_block in testimonial_blocks
+    if item_block.settings.video != blank or item_block.settings.video_url != blank
+      assign slide_count = slide_count | plus: 1
+    endif
+  endfor
+
+  assign play_icon_opacity = section.settings.video_testimonials_play_icon_circle_opacity | default: 35 | times: 0.01
+-%}
+
+{%- if slide_count == 0 -%}
+  {%- if request.design_mode -%}
+    <div class="product-video-testimonials product-video-testimonials--empty">
+      <p class="product-video-testimonials__placeholder">
+        Add Video testimonial blocks with a video or URL to populate this carousel.
+      </p>
+    </div>
+  {%- endif -%}
+{%- else -%}
+  <product-video-testimonials
+    class="product-video-testimonials"
+    style="
+      --vt-heading-color: {{ section.settings.video_testimonials_heading_color }};
+      --vt-nav-color: {{ section.settings.video_testimonials_nav_color }};
+      --vt-slide-gap: {{ section.settings.video_testimonials_slide_gap }}px;
+      --vt-slide-width: {{ section.settings.video_testimonials_slide_width }}px;
+      --vt-play-icon-size: {{ section.settings.video_testimonials_play_icon_size }}px;
+    "
+  >
+    {%- unless section.settings.video_testimonials_heading == blank -%}
+      <h2 class="product-video-testimonials__heading">
+        {{ section.settings.video_testimonials_heading | escape }}
+      </h2>
+    {%- endunless -%}
+
+    <div class="product-video-testimonials__carousel">
+      <div class="swiper product-video-testimonials__swiper" data-video-testimonials-swiper>
+        <div class="swiper-wrapper">
+          {%- for item_block in testimonial_blocks -%}
+            {%- liquid
+              assign shopify_video = item_block.settings.video
+              assign external_video = item_block.settings.video_url
+              assign poster = item_block.settings.thumbnail | default: shopify_video.preview_image
+
+              if shopify_video == blank and external_video == blank
+                continue
+              endif
+
+              assign video_id = shopify_video.id | default: external_video.id
+              assign video_alt = shopify_video.alt | default: section.settings.video_testimonials_heading
+              assign alt = 'sections.video.load_video' | t: description: video_alt | escape
+              assign media_id = section.id | append: '-' | append: item_block.id
+            -%}
+
+            <div class="swiper-slide product-video-testimonials__slide" {{ item_block.shopify_attributes }}>
+              <deferred-media
+                class="product-video-testimonials__media deferred-media media global-media-settings global-media-settings--no-shadow"
+                data-media-id="{{ media_id }}"
+                {% if poster != blank %}
+                  style="--ratio-percent: {{ 1 | divided_by: poster.aspect_ratio | times: 100 }}%;"
+                {% else %}
+                  style="--ratio-percent: 177.78%;"
+                {% endif %}
+              >
+                <button
+                  id="Deferred-Poster-{{ media_id }}"
+                  class="product-video-testimonials__poster deferred-media__poster"
+                  type="button"
+                  aria-label="{{ alt }}"
+                >
+                  {%- if poster != blank -%}
+                    {{
+                      poster
+                      | image_url: width: 800
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '200, 300, 400, 500, 600, 800',
+                        sizes: '(min-width: 990px) 240px, (min-width: 750px) 33vw, 72vw',
+                        alt: alt,
+                        class: 'product-video-testimonials__thumbnail'
+                    }}
+                  {%- else -%}
+                    {{ 'collection-2' | placeholder_svg_tag: 'placeholder-svg placeholder product-video-testimonials__thumbnail' }}
+                  {%- endif -%}
+                  <span class="product-video-testimonials__play">
+                    {%- if section.settings.video_testimonials_play_icon_image != blank -%}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="16" viewBox="0 0 14 16" fill="none">
+                        <path d="M13.5 7.06364C14.1667 7.44854 14.1667 8.41079 13.5 8.79569L1.5 15.7239C0.833333 16.1088 -7.15042e-07 15.6277 -6.81393e-07 14.8579L-7.57104e-08 1.00146C-4.20614e-08 0.231661 0.833333 -0.249466 1.5 0.135434L13.5 7.06364Z" fill="white"/>
+                        </svg>
+                    {%- else -%}
+                      {%- render 'icon-video-play',
+                        circle_color: section.settings.video_testimonials_play_icon_circle_color,
+                        circle_opacity: play_icon_opacity,
+                        icon_color: section.settings.video_testimonials_play_icon_color,
+                        size: section.settings.video_testimonials_play_icon_size
+                      -%}
+                    {%- endif -%}
+                  </span>
+                </button>
+                <template>
+                  {%- if shopify_video == blank and external_video != blank -%}
+                    {%- liquid
+                      assign loop = ''
+                      if section.settings.enable_video_looping
+                        assign loop = '&loop=1&playlist=' | append: video_id
+                      endif
+                    -%}
+                    {%- if external_video.type == 'youtube' -%}
+                      <iframe
+                        src="https://www.youtube.com/embed/{{ video_id }}?enablejsapi=1&autoplay=1{{ loop }}"
+                        class="js-youtube"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen
+                        title="{{ video_alt | escape }}"
+                      ></iframe>
+                    {%- else -%}
+                      <iframe
+                        src="https://player.vimeo.com/video/{{ video_id }}?autoplay=1{{ loop }}"
+                        class="js-vimeo"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen
+                        title="{{ video_alt | escape }}"
+                      ></iframe>
+                    {%- endif -%}
+                  {%- else -%}
+                    {{
+                      shopify_video
+                      | video_tag:
+                        image_size: '800x',
+                        autoplay: true,
+                        loop: section.settings.enable_video_looping,
+                        controls: true,
+                        muted: false
+                    }}
+                  {%- endif -%}
+                </template>
+              </deferred-media>
+            </div>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      <div class="product-video-testimonials__controls">
+        <button
+          type="button"
+          class="product-video-testimonials__nav product-video-testimonials__nav--prev"
+          aria-label="{{ 'general.slider.previous_slide' | t }}"
+        >
+          <span class="product-video-testimonials__nav-icon product-video-testimonials__nav-icon--prev">
+            {%- render 'icon-caret' -%}
+          </span>
+        </button>
+        <div class="product-video-testimonials__pagination"></div>
+        <button
+          type="button"
+          class="product-video-testimonials__nav product-video-testimonials__nav--next"
+          aria-label="{{ 'general.slider.next_slide' | t }}"
+        >
+          <span class="product-video-testimonials__nav-icon">
+            {%- render 'icon-caret' -%}
+          </span>
+        </button>
+      </div>
+    </div>
+  </product-video-testimonials>
+{%- endif -%}

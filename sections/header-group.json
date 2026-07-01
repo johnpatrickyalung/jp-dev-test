@@ -1,0 +1,116 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-bar-0": {
+          "type": "announcement",
+          "settings": {
+            "text": "LIMITED TIME OFFER - SAVE",
+            "highlight_text": "UP TO 71% OFF",
+            "text_alignment": "center",
+            "link": "",
+            "background_color": "#1a4731",
+            "text_color": "#ffffff",
+            "highlight_color": "#F79D0D"
+          }
+        }
+      },
+      "block_order": [
+        "announcement-bar-0"
+      ],
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "custom_css": [
+        ".header__heading-link .h2 {font-size: 16px;}"
+      ],
+      "settings": {
+        "logo_position": "middle-center",
+        "menu": "main-menu",
+        "menu_type_desktop": "dropdown",
+        "sticky_header_type": "always",
+        "show_line_separator": false,
+        "color_scheme": "background-1",
+        "enable_country_selector": false,
+        "enable_language_selector": false,
+        "mobile_logo_position": "center",
+        "margin_bottom": 0,
+        "padding_top": 8,
+        "padding_bottom": 8
+      }
+    },
+    "scrolling_marquee_7wJgJM": {
+      "type": "scrolling-marquee",
+      "blocks": {
+        "item_VMcbWU": {
+          "type": "item",
+          "settings": {
+            "text": "Comfortable knees and hips"
+          }
+        },
+        "item_H6YXJ3": {
+          "type": "item",
+          "settings": {
+            "text": "Smoother daily movement"
+          }
+        },
+        "item_tQaDgy": {
+          "type": "item",
+          "settings": {
+            "text": "Easier morning starts"
+          }
+        },
+        "item_eURTTx": {
+          "type": "item",
+          "settings": {
+            "text": "Comfortable knees and hips"
+          }
+        },
+        "item_i9YPYg": {
+          "type": "item",
+          "settings": {
+            "text": "Smoother daily movement"
+          }
+        },
+        "item_EFax7T": {
+          "type": "item",
+          "settings": {
+            "text": "Easier morning starts"
+          }
+        }
+      },
+      "block_order": [
+        "item_VMcbWU",
+        "item_H6YXJ3",
+        "item_tQaDgy",
+        "item_eURTTx",
+        "item_i9YPYg",
+        "item_EFax7T"
+      ],
+      "name": "t:sections.scrolling-marquee.presets.name",
+      "settings": {
+        "background_color": "#f6f6f6",
+        "text_color": "#095946",
+        "scroll_speed": 30
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "header",
+    "scrolling_marquee_7wJgJM"
+  ]
+}

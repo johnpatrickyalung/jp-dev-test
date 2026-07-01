@@ -1,0 +1,26 @@
+{% comment %}
+  Renders a benefit icon from preset or custom image.
+
+  Accepts:
+  - icon: {String} Icon key
+  - custom_icon: {Object} Image object
+
+  Usage:
+  {% render 'product-benefit-icon', icon: block.settings.icon, custom_icon: block.settings.custom_icon %}
+{% endcomment %}
+
+{%- if custom_icon != blank -%}
+  {{
+    custom_icon
+    | image_url: width: 88
+    | image_tag:
+      class: 'product-benefit__custom-icon',
+      loading: 'lazy',
+      widths: '22, 44, 88',
+      alt: ''
+  }}
+{%- elsif icon == 'checkmark' -%}
+  {% render 'icon-checkmark' %}
+{%- elsif icon != blank and icon != 'none' -%}
+  {% render 'icon-accordion', icon: icon %}
+{%- endif -%}

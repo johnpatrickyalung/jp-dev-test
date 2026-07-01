@@ -1,0 +1,14 @@
+{% comment %}
+  Renders the product title.
+
+  Accepts:
+  - block: {Object} Block object
+  - product: {Object} Product liquid object
+
+  Usage:
+  {% render 'product-title', block: block, product: product %}
+{% endcomment %}
+
+<h1 class="product-title" style="--product-title-color: {{ block.settings.text_color }};">
+  {{ product.title | escape }}
+</h1>

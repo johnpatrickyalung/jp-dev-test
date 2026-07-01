@@ -1,0 +1,104 @@
+{% comment %}
+  Renders subscription save banner with checkbox.
+
+  Accepts:
+  - block: {Object}
+  - product: {Object}
+  - section: {Object}
+
+  Usage:
+  {% render 'product-subscription-banner', block: block, product: product, section: section %}
+{% endcomment %}
+
+{%- liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  assign save_percent = block.settings.save_percent | default: 20 | plus: 0
+  assign fixed_selling_plan_id = block.settings.selling_plan_id | strip
+  assign selling_plan_id = ''
+  assign has_selling_plan = false
+
+  for allocation in selected_variant.selling_plan_allocations
+    assign allocation_plan_id = allocation.selling_plan.id | append: ''
+    if fixed_selling_plan_id != blank
+      if allocation_plan_id == fixed_selling_plan_id
+        assign has_selling_plan = true
+        assign selling_plan_id = allocation.selling_plan.id
+        for adjustment in allocation.selling_plan.price_adjustments
+          if adjustment.value_type == 'percentage'
+            assign save_percent = adjustment.value | plus: 0
+          endif
+        endfor
+        break
+      endif
+    else
+      assign has_selling_plan = true
+      assign selling_plan_id = allocation.selling_plan.id
+      for adjustment in allocation.selling_plan.price_adjustments
+        if adjustment.value_type == 'percentage'
+          assign save_percent = adjustment.value | plus: 0
+        endif
+      endfor
+      break
+    endif
+  endfor
+
+  if has_selling_plan == false and selected_variant.selling_plan_allocations.size > 0
+    for allocation in selected_variant.selling_plan_allocations
+      assign has_selling_plan = true
+      assign selling_plan_id = allocation.selling_plan.id
+      for adjustment in allocation.selling_plan.price_adjustments
+        if adjustment.value_type == 'percentage'
+          assign save_percent = adjustment.value | plus: 0
+        endif
+      endfor
+      break
+    endfor
+  endif
+-%}
+
+<subscription-banner
+  class="product-subscription-banner"
+  data-section="{{ section.id }}"
+  style="
+    --subscription-border-color: {{ block.settings.border_color }};
+    --subscription-bg-color: {{ block.settings.background_color }};
+    --subscription-text-color: {{ block.settings.text_color }};
+  "
+  data-selling-plan-id="{{ selling_plan_id }}"
+  data-default-selling-plan-id="{{ fixed_selling_plan_id }}"
+>
+  <div class="product-subscription-banner__label">
+    <span class="product-subscription-banner__checkbox-wrap">
+      <input
+        type="checkbox"
+        id="SubscriptionBanner-{{ section.id }}"
+        class="product-subscription-banner__checkbox"
+        {% if block.settings.default_checked %}checked{% endif %}
+      >
+      <span class="product-subscription-banner__checkbox-visual" aria-hidden="true">
+        <span class="product-subscription-banner__checkbox-icon">
+          {% render 'icon-checkbox-check' %}
+        </span>
+      </span>
+    </span>
+    <label
+      class="product-subscription-banner__copy"
+      for="SubscriptionBanner-{{ section.id }}"
+    >
+      <span class="product-subscription-banner__title">
+        {%- liquid
+          assign banner_title = block.settings.title
+          assign banner_percent = save_percent
+          if banner_title contains '[percent]'
+            echo banner_title | replace: '[percent]', banner_percent
+          else
+            echo banner_title | escape
+          endif
+        -%}
+      </span>
+      {%- if block.settings.subtitle != blank -%}
+        <span class="product-subscription-banner__subtitle">{{ block.settings.subtitle | escape }}</span>
+      {%- endif -%}
+    </label>
+  </div>
+</subscription-banner>

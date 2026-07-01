@@ -1,0 +1,143 @@
+{% comment %}
+  Renders product info list rows.
+
+  Accepts:
+  - block: {Object} info_list block settings
+  - product: {Object}
+
+  Usage:
+  {% render 'product-info-list', block: block, product: product %}
+{% endcomment %}
+
+{%- liquid
+  assign selected_variant = product.selected_or_first_available_variant
+-%}
+
+<div
+  class="product-info-list"
+  data-use-inventory="{{ block.settings.item_1_use_inventory }}"
+  data-in-stock-label="{{ block.settings.item_1_in_stock_label | escape }}"
+  data-out-of-stock-label="{{ block.settings.item_1_out_of_stock_label | escape }}"
+  data-delivery-text="{{ block.settings.item_1_delivery_text | escape }}"
+  style="
+    --info-list-text-color: {{ block.settings.text_color }};
+    --info-list-icon-color: {{ block.settings.icon_color }};
+    --info-list-in-stock-color: {{ block.settings.in_stock_color }};
+    --info-list-row-gap: {{ block.settings.row_gap }}px;
+  "
+>
+  <ul class="product-info-list__items list-unstyled" role="list">
+    {%- if block.settings.item_1_enabled -%}
+      <li class="product-info-list__item">
+        <span class="product-info-list__icon" data-info-stock-icon>
+          {%- if block.settings.item_1_custom_icon != blank -%}
+            {% render 'product-info-icon', custom_icon: block.settings.item_1_custom_icon %}
+          {%- elsif block.settings.item_1_use_inventory -%}
+            {% render 'product-info-icon', icon: 'stock_dot', in_stock: selected_variant.available %}
+          {%- else -%}
+            {% render 'product-info-icon',
+              icon: block.settings.item_1_icon,
+              custom_icon: block.settings.item_1_custom_icon
+            %}
+          {%- endif -%}
+        </span>
+        <span class="product-info-list__text" data-info-stock-text>
+          {%- if block.settings.item_1_use_inventory -%}
+            {%- if selected_variant.available -%}
+              <strong>{{ block.settings.item_1_in_stock_label | escape }}</strong>
+            {%- else -%}
+              <strong>{{ block.settings.item_1_out_of_stock_label | escape }}</strong>
+            {%- endif -%}
+            {%- if selected_variant.available and block.settings.item_1_delivery_text != blank -%}
+              <span class="product-info-list__separator"> | </span>{{ block.settings.item_1_delivery_text | escape }}
+            {%- endif -%}
+          {%- elsif block.settings.item_1_text != blank -%}
+            {{ block.settings.item_1_text | escape }}
+          {%- endif -%}
+        </span>
+      </li>
+    {%- endif -%}
+
+    {%- if block.settings.item_2_enabled -%}
+      {%- liquid
+        assign country_name = block.settings.item_2_country_override
+        if country_name == blank and block.settings.item_2_use_country
+          assign country_name = localization.country.name
+        endif
+      -%}
+      <li class="product-info-list__item">
+        <span class="product-info-list__icon">
+          {% render 'product-info-icon',
+            icon: block.settings.item_2_icon,
+            custom_icon: block.settings.item_2_custom_icon
+          %}
+        </span>
+        <span class="product-info-list__text">
+          {%- if block.settings.item_2_text_prefix != blank -%}
+            {{ block.settings.item_2_text_prefix | escape }}
+          {%- endif -%}
+          {%- if block.settings.item_2_flag != blank -%}
+            {{ ' ' }}{{ block.settings.item_2_flag | escape }}
+          {%- endif -%}
+          {%- if country_name != blank -%}
+            {{ ' ' }}{{ country_name | escape }}
+          {%- elsif block.settings.item_2_text_suffix != blank -%}
+            {{ ' ' }}{{ block.settings.item_2_text_suffix | escape }}
+          {%- endif -%}
+        </span>
+      </li>
+    {%- endif -%}
+
+    {%- if block.settings.item_3_enabled and block.settings.item_3_text != blank -%}
+      <li class="product-info-list__item">
+        <span class="product-info-list__icon">
+          {% render 'product-info-icon',
+            icon: block.settings.item_3_icon,
+            custom_icon: block.settings.item_3_custom_icon
+          %}
+        </span>
+        <span class="product-info-list__text">{{ block.settings.item_3_text | escape }}</span>
+      </li>
+    {%- endif -%}
+
+    {%- if block.settings.item_4_enabled and block.settings.item_4_text != blank -%}
+      {%- liquid
+        assign use_modal = block.settings.item_4_use_modal
+        assign has_modal_content = false
+
+        if block.settings.item_4_modal_content != blank or block.settings.item_4_modal_page.content != blank
+          assign has_modal_content = true
+        endif
+
+        if use_modal and has_modal_content == false
+          assign use_modal = false
+        endif
+      -%}
+      <li class="product-info-list__item">
+        <span class="product-info-list__icon">
+          {% render 'product-info-icon',
+            icon: block.settings.item_4_icon,
+            custom_icon: block.settings.item_4_custom_icon
+          %}
+        </span>
+        <span class="product-info-list__text">
+          {%- if use_modal -%}
+            <a href="#ingredient" class="product-info-list__link">
+              {{- block.settings.item_4_text | escape -}}
+            </a>
+          {%- elsif block.settings.item_4_url != blank -%}
+            <a href="{{ block.settings.item_4_url }}" class="product-info-list__link">
+              {{- block.settings.item_4_text | escape -}}
+            </a>
+          {%- else -%}
+            {{ block.settings.item_4_text | escape }}
+          {%- endif -%}
+        </span>
+      </li>
+    {%- endif -%}
+  </ul>
+
+  {%- if block.settings.item_4_enabled and block.settings.item_4_use_modal -%}
+    {% render 'product-ingredients-modal', block: block %}
+  {%- endif -%}
+</div>

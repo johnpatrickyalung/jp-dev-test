@@ -1,0 +1,135 @@
+{{ 'section-announcement-bar.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  {%- for block in section.blocks -%}
+    #Announcement-{{ block.id }} {
+      background-color: {{ block.settings.background_color }};
+    }
+
+    #Announcement-{{ block.id }} .announcement-bar__text {
+      color: {{ block.settings.text_color }};
+    }
+
+    #Announcement-{{ block.id }} .announcement-bar__highlight {
+      color: {{ block.settings.highlight_color }};
+    }
+  {%- endfor -%}
+{%- endstyle -%}
+
+{%- for block in section.blocks -%}
+  {%- case block.type -%}
+    {%- when 'announcement' -%}
+      <div
+        id="Announcement-{{ block.id }}"
+        class="announcement-bar announcement-bar--promo"
+        role="region"
+        aria-label="{{ 'sections.header.announcement' | t }}"
+        {{ block.shopify_attributes }}
+      >
+        {%- if block.settings.text != blank or block.settings.highlight_text != blank -%}
+          {%- if block.settings.link != blank -%}
+            <a href="{{ block.settings.link }}" class="announcement-bar__link announcement-bar__link--promo focus-inset">
+          {%- endif -%}
+          <div class="page-width">
+            <p class="announcement-bar__message announcement-bar__message--promo {{ block.settings.text_alignment }}">
+              {%- if block.settings.text != blank -%}
+                <span class="announcement-bar__text">{{ block.settings.text | escape }} </span>
+              {%- endif -%}
+              {%- if block.settings.highlight_text != blank -%}
+                <span class="announcement-bar__highlight">{{ block.settings.highlight_text | escape }}</span>
+              {%- endif -%}
+            </p>
+          </div>
+          {%- if block.settings.link != blank -%}
+            </a>
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+  {%- endcase -%}
+{%- endfor -%}
+
+{% schema %}
+{
+  "name": "t:sections.announcement-bar.name",
+  "max_blocks": 12,
+  "class": "announcement-bar-section",
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "t:sections.announcement-bar.blocks.announcement.name",
+      "settings": [
+        {
+          "type": "header",
+          "content": "t:sections.announcement-bar.blocks.announcement.settings.content_header.content"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "default": "LIMITED TIME OFFER - SAVE ",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text.label"
+        },
+        {
+          "type": "text",
+          "id": "highlight_text",
+          "default": "UP TO 71% OFF",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.highlight_text.label"
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.options__1.label"
+            },
+            {
+              "value": "center",
+              "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.options__2.label"
+            },
+            {
+              "value": "right",
+              "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.options__3.label"
+            }
+          ],
+          "default": "center",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text_alignment.label"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.link.label"
+        },
+        {
+          "type": "header",
+          "content": "t:sections.announcement-bar.blocks.announcement.settings.colors_header.content"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.background_color.label",
+          "default": "#1a4731"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.text_color.label",
+          "default": "#ffffff"
+        },
+        {
+          "type": "color",
+          "id": "highlight_color",
+          "label": "t:sections.announcement-bar.blocks.announcement.settings.highlight_color.label",
+          "default": "#c58d2a"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "announcement"
+      }
+    ]
+  }
+}
+{% endschema %}

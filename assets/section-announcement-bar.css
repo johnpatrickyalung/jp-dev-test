@@ -1,0 +1,30 @@
+.announcement-bar--promo {
+  border-bottom: none;
+}
+
+.announcement-bar__message--promo {
+  padding: 8px 0;
+  font-weight: 700;
+  font-size: 18.2px;
+  line-height: 150%;
+  letter-spacing: -1%;
+  text-align: center;  
+}
+
+.announcement-bar__link--promo {
+  display: block;
+  width: 100%;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.announcement-bar__link--promo:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+@media screen and (max-width: 768px) {
+  .announcement-bar__message--promo {
+    font-size: 14px !important;
+  }
+}

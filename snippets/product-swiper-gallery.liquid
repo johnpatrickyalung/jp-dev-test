@@ -1,0 +1,146 @@
+{% comment %}
+  Renders a Swiper product media gallery with vertical thumbnails on the left.
+
+  Accepts:
+  - section: {Object} Section object
+  - product: {Object} Product liquid object
+
+  Usage:
+  {% render 'product-swiper-gallery', section: section, product: product %}
+{% endcomment %}
+
+{%- liquid
+  assign featured_media = product.selected_or_first_available_variant.featured_media
+  assign media_count = product.media.size
+
+  assign badge_label = ''
+  assign bestseller_meta = product.metafields.custom.product_badge
+  assign product_badge_icon = product.metafields.custom.product_badge_icon
+
+  if bestseller_meta.value == true
+    assign badge_label = 'BESTSELLER'
+  elsif bestseller_meta.value != blank
+    assign badge_label = bestseller_meta.value
+  endif
+-%}
+
+<product-swiper-gallery class="product-swiper-gallery" data-section-id="{{ section.id }}">
+  {%- if media_count > 0 -%}
+    <div class="product-swiper-gallery__thumbs-wrapper{% if media_count == 1 %} visually-hidden{% endif %}">
+      <div
+        class="swiper product-swiper-thumbs"
+        data-swiper-thumbs
+        aria-label="{{ 'products.product.media.gallery_viewer' | t }}"
+      >
+        <div class="swiper-wrapper">
+          {%- if featured_media != null -%}
+            <div class="swiper-slide">
+              <div class="product-swiper-thumbs__slide-inner">
+                  {{
+                    featured_media.preview_image
+                    | img_url: 'master'
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '102, 204',
+                      class: 'product-swiper-thumbs__image',
+                      alt: featured_media.alt
+                  }}
+                {%- if featured_media.media_type == 'video' or featured_media.media_type == 'external_video' -%}
+                  <span class="product-swiper-thumbs__badge">{% render 'icon-play' %}</span>
+                {%- elsif featured_media.media_type == 'model' -%}
+                  <span class="product-swiper-thumbs__badge">{% render 'icon-3d-model' %}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- for media in product.media -%}
+            {%- unless media.id == featured_media.id -%}
+              <div class="swiper-slide">
+                <div class="product-swiper-thumbs__slide-inner">
+                  {{
+                    media.preview_image
+                    | image_url: width: 204
+                    | image_tag:
+                      loading: 'lazy',
+                      widths: '102, 204',
+                      class: 'product-swiper-thumbs__image',
+                      alt: media.alt
+                  }}
+                  {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                    <span class="product-swiper-thumbs__badge">{% render 'icon-play' %}</span>
+                  {%- elsif media.media_type == 'model' -%}
+                    <span class="product-swiper-thumbs__badge">{% render 'icon-3d-model' %}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+
+    <div class="product-swiper-gallery__main-wrapper">
+
+
+      <div class="swiper product-swiper-main" data-swiper-main>
+        <div class="swiper-wrapper">
+          {%- if featured_media != null -%}
+            <div class="swiper-slide">
+              <div class="product-swiper-main__media">
+                {% render 'product-media',
+                  media: featured_media,
+                  loop: section.settings.enable_video_looping,
+                  variant_image: false
+                %}
+              </div>
+            </div>
+          {%- endif -%}
+
+          {%- for media in product.media -%}
+            {%- unless media.id == featured_media.id -%}
+              <div class="swiper-slide">
+                <div class="product-swiper-main__media">
+                  {%  if forloop.index == 1 %}
+                    {%- if badge_label != blank -%}
+                      <div class="product-swiper-gallery__badge">
+                        <img src="{{ product_badge_icon | image_url: width: 16 }}" alt="{{ badge_label }}" width="16" height="16">
+                        <span class="product-swiper-gallery__badge-text">{{ badge_label | escape }}</span>
+                      </div>
+                    {%- endif -%}
+                  {% endif %}
+                  {% render 'product-media',
+                    media: media,
+                    loop: section.settings.enable_video_looping,
+                    variant_image: false
+                  %}
+                </div>
+              </div>
+            {%- endunless -%}
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- if media_count > 1 -%}
+        <button
+          type="button"
+          class="product-swiper-main__button product-swiper-main__button--prev"
+          aria-label="{{ 'general.slider.previous_slide' | t }}"
+        >
+          {% render 'icon-caret' %}
+        </button>
+        <button
+          type="button"
+          class="product-swiper-main__button product-swiper-main__button--next"
+          aria-label="{{ 'general.slider.next_slide' | t }}"
+        >
+          {% render 'icon-caret' %}
+        </button>
+      {%- endif -%}
+    </div>
+  {%- else -%}
+    <div class="product-swiper-gallery__main-wrapper">
+      {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+    </div>
+  {%- endif -%}
+</product-swiper-gallery>

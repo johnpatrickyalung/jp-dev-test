@@ -1,0 +1,117 @@
+{{ 'section-scrolling-marquee.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-marquee {
+    --marquee-bg: {{ section.settings.background_color }};
+    --marquee-text: {{ section.settings.text_color }};
+    --marquee-speed: {{ section.settings.scroll_speed }}s;
+  }
+{%- endstyle -%}
+
+{%- if section.blocks.size > 0 -%}
+  <div
+    class="marquee section-{{ section.id }}-marquee"
+    role="region"
+    aria-label="{{ 'sections.scrolling-marquee.accessibility_label' | t }}"
+  >
+    <div class="marquee__track">
+      {%- for i in (1..2) -%}
+        <div class="marquee__content"{% if i == 2 %} aria-hidden="true"{% endif %}>
+          {%- for block in section.blocks -%}
+            {%- if block.settings.text != blank -%}
+              <div
+                class="marquee__item"
+                {% if i == 1 %}
+                  {{ block.shopify_attributes }}
+                {% endif %}
+              >
+                <span class="marquee__separator" aria-hidden="true"></span>
+                <span class="marquee__text">{{ block.settings.text | escape }}</span>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:sections.scrolling-marquee.name",
+  "tag": "section",
+  "class": "section-scrolling-marquee",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.scrolling-marquee.settings.colors_header.content"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "t:sections.scrolling-marquee.settings.background_color.label",
+      "default": "#f5f5f4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:sections.scrolling-marquee.settings.text_color.label",
+      "default": "#1a4731"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.scrolling-marquee.settings.animation_header.content"
+    },
+    {
+      "type": "range",
+      "id": "scroll_speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "label": "t:sections.scrolling-marquee.settings.scroll_speed.label",
+      "default": 30
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "t:sections.scrolling-marquee.blocks.item.name",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "t:sections.scrolling-marquee.blocks.item.settings.text.label",
+          "default": "Marquee text"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:sections.scrolling-marquee.presets.name",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "text": "Comfortable knees and hips"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Smoother daily movement"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "text": "Easier morning starts"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

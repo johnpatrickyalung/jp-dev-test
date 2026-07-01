@@ -1,0 +1,47 @@
+{% comment %}
+  Custom smooth accordion item.
+
+  Accepts:
+  - block: {Object} accordion block
+  - section: {Object} section object
+{% endcomment %}
+
+{%- assign panel_id = 'ProductAccordion-' | append: block.id | append: '-' | append: section.id -%}
+{%- assign trigger_id = 'ProductAccordionTrigger-' | append: block.id | append: '-' | append: section.id -%}
+
+<product-accordion class="product-swiper-accordion">
+  <button
+    type="button"
+    id="{{ trigger_id }}"
+    class="product-swiper-accordion__trigger"
+    data-accordion-trigger
+    aria-expanded="false"
+    aria-controls="{{ panel_id }}"
+  >
+    <h3 class="product-swiper-accordion__title">
+      {{ block.settings.heading | escape }}
+    </h3>
+    <span class="product-swiper-accordion__icon" aria-hidden="true">
+      {% render 'icon-plus' %}
+    </span>
+  </button>
+  <div
+    id="{{ panel_id }}"
+    class="product-swiper-accordion__panel"
+    data-accordion-panel
+    role="region"
+    aria-labelledby="{{ trigger_id }}"
+    inert
+  >
+    <div class="product-swiper-accordion__panel-inner">
+      <div class="product-swiper-accordion__content rte">
+        {%- if block.settings.content != blank -%}
+          {{ block.settings.content }}
+        {%- endif -%}
+        {%- if block.settings.page.content != blank -%}
+          {{ block.settings.page.content }}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</product-accordion>

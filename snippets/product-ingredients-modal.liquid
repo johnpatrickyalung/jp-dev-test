@@ -1,0 +1,57 @@
+{% comment %}
+  Ingredients modal opened via #ingredient trigger.
+
+  Accepts:
+  - block: {Object} info_list block settings
+{% endcomment %}
+
+{%- liquid
+  assign modal_heading = block.settings.item_4_modal_heading | default: block.settings.item_4_text
+  assign has_modal_content = false
+
+  if block.settings.item_4_modal_content != blank or block.settings.item_4_modal_page.content != blank
+    assign has_modal_content = true
+  endif
+-%}
+
+{%- if has_modal_content -%}
+  <product-ingredients-modal
+    id="ingredient"
+    class="product-ingredients-modal"
+    aria-hidden="true"
+  >
+    <div class="product-ingredients-modal__overlay" data-ingredients-modal-close tabindex="-1"></div>
+    <div
+      class="product-ingredients-modal__dialog"
+      data-ingredients-modal-dialog
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="ingredient-modal-title"
+      tabindex="-1"
+    >
+      <button
+        type="button"
+        class="product-ingredients-modal__close"
+        data-ingredients-modal-close
+        aria-label="{{ 'accessibility.close' | t }}"
+      >
+        {% render 'icon-close' %}
+      </button>
+
+      {%- unless modal_heading == blank -%}
+        <h2 id="ingredient-modal-title" class="product-ingredients-modal__title">
+          {{ modal_heading | escape }}
+        </h2>
+      {%- endunless -%}
+
+      <div class="product-ingredients-modal__content rte">
+        {%- if block.settings.item_4_modal_content != blank -%}
+          {{ block.settings.item_4_modal_content }}
+        {%- endif -%}
+        {%- if block.settings.item_4_modal_page.content != blank -%}
+          {{ block.settings.item_4_modal_page.content }}
+        {%- endif -%}
+      </div>
+    </div>
+  </product-ingredients-modal>
+{%- endif -%}

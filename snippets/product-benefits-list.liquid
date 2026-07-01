@@ -1,0 +1,44 @@
+{% comment %}
+  Renders a product benefits grid.
+
+  Accepts:
+  - block: {Object} benefits_list block settings
+
+  Usage:
+  {% render 'product-benefits-list', block: block %}
+{% endcomment %}
+
+<div
+  class="product-benefits"
+  style="
+    --benefit-icon-bg: {{ block.settings.icon_background_color }};
+    --benefit-icon-color: {{ block.settings.icon_color }};
+    --benefit-text-color: {{ block.settings.text_color }};
+    --benefit-column-gap: {{ block.settings.column_gap }}px;
+    --benefit-row-gap: {{ block.settings.row_gap }}px;
+  "
+>
+  <ul class="product-benefits__list list-unstyled" role="list">
+    {%- for i in (1..4) -%}
+      {%- liquid
+        assign text_key = 'benefit_' | append: i | append: '_text'
+        assign icon_key = 'benefit_' | append: i | append: '_icon'
+        assign custom_icon_key = 'benefit_' | append: i | append: '_custom_icon'
+        assign benefit_text = block.settings[text_key]
+        assign benefit_icon = block.settings[icon_key]
+        assign benefit_custom_icon = block.settings[custom_icon_key]
+      -%}
+      {%- if benefit_text != blank -%}
+        <li class="product-benefits__item">
+          <span class="product-benefit__icon">
+            {% render 'product-benefit-icon',
+              icon: benefit_icon,
+              custom_icon: benefit_custom_icon
+            %}
+          </span>
+          <span class="product-benefits__text">{{ benefit_text | escape }}</span>
+        </li>
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+</div>
